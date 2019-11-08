@@ -70,6 +70,7 @@ public class TsFileSequenceReader implements AutoCloseable {
   private int totalChunkNum;
   private TsFileMetaData tsFileMetaData;
   private EndianType endianType = EndianType.BIG_ENDIAN;
+  private boolean isOldVersion = false;
 
   private boolean cacheDeviceMetadata = false;
   private Map<TsDeviceMetadataIndex, TsDeviceMetadata> deviceMetadataMap;
@@ -98,6 +99,8 @@ public class TsFileSequenceReader implements AutoCloseable {
     // old version number of TsFile using little endian starts with "v"
     this.endianType = this.readVersionNumber().startsWith("v") 
         ? EndianType.LITTLE_ENDIAN : EndianType.BIG_ENDIAN;
+    this.isOldVersion = this.readVersionNumber().startsWith("v") 
+        ? true : false;
     try {
       if (loadMetadataSize) {
         loadMetadataSize();
@@ -245,9 +248,24 @@ public class TsFileSequenceReader implements AutoCloseable {
    */
   public TsFileMetaData readFileMetadata() throws IOException {
     if (tsFileMetaData == null) {
-      tsFileMetaData = TsFileMetaData.deserializeFrom(readData(fileMetadataPos, fileMetadataSize));
+      tsFileMetaData = TsFileMetaData.deserializeFrom(readData(fileMetadataPos, fileMetadataSize), isOldVersion);
+    }
+    if (isOldVersion) {
+      tsFileMetaData.setTotalChunkNum(countTotalChunkNum());
     }
     return tsFileMetaData;
+  }
+  
+  private int countTotalChunkNum() throws IOException {
+    int count = 0;
+    for (TsDeviceMetadataIndex deviceIndex : tsFileMetaData.getDeviceMap().values()) {
+      TsDeviceMetadata deviceMetadata = readTsDeviceMetaData(deviceIndex);
+      for (ChunkGroupMetaData chunkGroupMetaData : deviceMetadata
+          .getChunkGroupMetaDataList()) {
+        count += chunkGroupMetaData.getChunkMetaDataList().size();
+      }
+    }
+    return count;
   }
 
   /**
