@@ -34,48 +34,66 @@ import org.slf4j.LoggerFactory;
 public class PlainDecoder extends Decoder {
 
   private static final Logger logger = LoggerFactory.getLogger(PlainDecoder.class);
-  private EndianType endianType;
+  private static EndianType endianType;
 
   public EndianType getEndianType() {
     return endianType;
   }
 
-  public void setEndianType(EndianType endianType) {
-    this.endianType = endianType;
+  public static void setEndianType(EndianType endianType) {
+    PlainDecoder.endianType = endianType;
   }
 
   public PlainDecoder(EndianType endianType) {
     super(TSEncoding.PLAIN);
-    this.endianType = endianType;
+    setEndianType(endianType);
   }
 
   @Override
   public boolean readBoolean(ByteBuffer buffer) {
+    if (this.getEndianType() == EndianType.LITTLE_ENDIAN) {
+      buffer.order(ByteOrder.LITTLE_ENDIAN);
+    }
     return buffer.get() != 0;
   }
 
   @Override
   public short readShort(ByteBuffer buffer) {
+    if (this.getEndianType() == EndianType.LITTLE_ENDIAN) {
+      buffer.order(ByteOrder.LITTLE_ENDIAN);
+    }
     return buffer.getShort();
   }
 
   @Override
   public int readInt(ByteBuffer buffer) {
+    if (this.getEndianType() == EndianType.LITTLE_ENDIAN) {
+      buffer.order(ByteOrder.LITTLE_ENDIAN);
+    }
     return buffer.getInt();
   }
 
   @Override
   public long readLong(ByteBuffer buffer) {
+    if (this.getEndianType() == EndianType.LITTLE_ENDIAN) {
+      buffer.order(ByteOrder.LITTLE_ENDIAN);
+    }
     return buffer.getLong();
   }
 
   @Override
   public float readFloat(ByteBuffer buffer) {
+    if (this.getEndianType() == EndianType.LITTLE_ENDIAN) {
+      buffer.order(ByteOrder.LITTLE_ENDIAN);
+    }
     return buffer.getFloat();
   }
 
   @Override
   public double readDouble(ByteBuffer buffer) {
+    if (this.getEndianType() == EndianType.LITTLE_ENDIAN) {
+      buffer.order(ByteOrder.LITTLE_ENDIAN);
+    }
     return buffer.getDouble();
   }
 

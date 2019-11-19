@@ -37,14 +37,14 @@ import org.apache.iotdb.tsfile.utils.ReadWriteIOUtils;
  */
 public abstract class RleDecoder extends Decoder {
 
-  private EndianType endianType;
+  private static EndianType endianType;
 
   public EndianType getEndianType() {
     return endianType;
   }
 
-  public void setEndianType(EndianType endianType) {
-    this.endianType = endianType;
+  public static void setEndianType(EndianType endianType) {
+    RleDecoder.endianType = endianType;
   }
 
   protected TSFileConfig config = TSFileDescriptor.getInstance().getConfig();
@@ -83,7 +83,7 @@ public abstract class RleDecoder extends Decoder {
    */
   public RleDecoder(EndianType endianType) {
     super(TSEncoding.RLE);
-    this.endianType = endianType;
+    RleDecoder.endianType = endianType;
     reset();
   }
 

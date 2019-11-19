@@ -21,7 +21,6 @@ package org.apache.iotdb.tsfile.read.reader.chunk;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.Arrays;
 import org.apache.iotdb.tsfile.common.conf.TSFileDescriptor;
 import org.apache.iotdb.tsfile.compress.IUnCompressor;
@@ -79,6 +78,7 @@ public abstract class ChunkReader {
     this.unCompressor = IUnCompressor.getUnCompressor(chunkHeader.getCompressionType());
     valueDecoder = Decoder
         .getDecoderByType(chunkHeader.getEncodingType(), chunkHeader.getDataType());
+    Decoder.setEndianType(endianType);
     data = new BatchData(chunkHeader.getDataType());
     hasCachedPageHeader = false;
   }
@@ -155,9 +155,6 @@ public abstract class ChunkReader {
     chunkDataBuffer.get(compressedPageBody, 0, compressedPageBodyLength);
     valueDecoder.reset();
     ByteBuffer pageData = ByteBuffer.wrap(unCompressor.uncompress(compressedPageBody));
-    if (endianType == EndianType.LITTLE_ENDIAN) {
-      pageData.order(ByteOrder.LITTLE_ENDIAN);
-    }
     PageReader reader = new PageReader(pageData, chunkHeader.getDataType(),
         valueDecoder, timeDecoder, filter);
     reader.setDeletedAt(deletedAt);
