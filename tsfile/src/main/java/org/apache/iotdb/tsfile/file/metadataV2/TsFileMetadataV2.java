@@ -29,12 +29,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Set;
 import java.util.TreeMap;
 import org.apache.iotdb.tsfile.common.conf.TSFileDescriptor;
 import org.apache.iotdb.tsfile.file.metadata.ChunkMetaData;
+import org.apache.iotdb.tsfile.read.common.Path;
 import org.apache.iotdb.tsfile.utils.BloomFilter;
 import org.apache.iotdb.tsfile.utils.ReadWriteIOUtils;
+import org.apache.iotdb.tsfile.write.schemaV2.TimeseriesSchema;
 
 /**
  * TSFileMetaData collects all metadata info and saves in its data structure.
@@ -50,7 +52,14 @@ public class TsFileMetadataV2 {
   // bloom filter
   private BloomFilter bloomFilter;
 
-  private long[] seriesMetadataIndex;
+  private long[] seriesMetaDataIndex;
+
+  public TsFileMetadataV2(long[] tsOffsets) {
+    this.seriesMetaDataIndex = tsOffsets;
+  }
+
+  public TsFileMetadataV2() {
+  }
 
   /**
    * deserialize data from the buffer.
@@ -58,7 +67,7 @@ public class TsFileMetadataV2 {
    * @param buffer -buffer use to deserialize
    * @return -a instance of TsFileMetaData
    */
-  public static TsFileMetadataV2 deserializeFrom(ByteBuffer buffer, boolean isOldVersion)
+  public static TsFileMetadataV2 deserializeFrom(ByteBuffer buffer)
       throws IOException {
     TsFileMetadataV2 fileMetaData = new TsFileMetadataV2();
 
@@ -90,13 +99,14 @@ public class TsFileMetadataV2 {
    * use the given outputStream to serialize bloom filter.
    *
    * @param outputStream -output stream to determine byte length
+   * @param schemaDescriptors 
    * @return -byte length
    */
   public int serializeBloomFilter(OutputStream outputStream,
-      List<ChunkMetaData> chunkGroupMetaDataList)
+      Map<Path, TimeseriesSchema> schemaDescriptors)
       throws IOException {
     int byteLen = 0;
-    BloomFilter filter = buildBloomFilter(chunkGroupMetaDataList);
+    BloomFilter filter = buildBloomFilter(schemaDescriptors);
 
     byte[] bytes = filter.serialize();
     byteLen += ReadWriteIOUtils.write(bytes.length, outputStream);
@@ -110,19 +120,21 @@ public class TsFileMetadataV2 {
 
   /**
    * build bloom filter
+   * @param schemaDescriptors 
    *
    * @return bloom filter
    */
-  private BloomFilter buildBloomFilter(List<ChunkMetaData> chunkGroupMetaDataList) {
-    List<String> paths = getAllPath(chunkGroupMetaDataList);
+  private BloomFilter buildBloomFilter(Map<Path, TimeseriesSchema> schemaDescriptors) {
+    Set<Path> paths = schemaDescriptors.keySet();
     BloomFilter bloomFilter = BloomFilter
         .getEmptyBloomFilter(TSFileDescriptor.getInstance().getConfig().getBloomFilterErrorRate(),
             paths.size());
-    for (String path : paths) {
-      bloomFilter.add(path);
+    for (Path path : paths) {
+      bloomFilter.add(path.toString());
     }
     return bloomFilter;
   }
+
 
   public int getTotalChunkNum() {
     return totalChunkNum;

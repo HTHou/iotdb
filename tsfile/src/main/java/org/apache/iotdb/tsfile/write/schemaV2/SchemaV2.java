@@ -20,7 +20,6 @@ package org.apache.iotdb.tsfile.write.schemaV2;
 
 import java.util.LinkedHashMap;
 import org.apache.iotdb.tsfile.read.common.Path;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,23 +40,32 @@ public class SchemaV2 {
    * template name -> (measuremnet -> TimeseriesSchema)
    */
   private Map<String, Map<String, TimeseriesSchema>> deviceTemplates;
-
-  private Map<String> devices;
+  
+  /**
+   * device -> template name
+   */
+  private Map<String, String> devices;
 
   /**
    * register a measurement schema map.
    */
+  
+  public SchemaV2() {
+    this.timeseriesSchemaMap = new LinkedHashMap<>();
+  }
+  
   public void registerTimeseries(Path path, TimeseriesSchema descriptor) {
-
+    this.timeseriesSchemaMap.put(path, descriptor);
   }
 
 
-  public void regieterDeviceTemplate () {
-
+  public void regieterDeviceTemplate (String templateName, 
+      Map<String, TimeseriesSchema> template) {
+    this.deviceTemplates.put(templateName, template);
   }
 
-  public void regiesterDevice () {
-
+  public void regiesterDevice (String deviceId, String templateName) {
+    this.devices.put(deviceId, templateName);
   }
 
 

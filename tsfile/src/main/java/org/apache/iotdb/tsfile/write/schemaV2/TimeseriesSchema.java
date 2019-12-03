@@ -42,6 +42,8 @@ import org.apache.iotdb.tsfile.utils.StringContainer;
  * TSDataTypeConverter up to now.
  */
 public class TimeseriesSchema implements Comparable<TimeseriesSchema>, Serializable {
+  
+  private String measurementId;
 
   private TSDataType type;
 
@@ -77,8 +79,6 @@ public class TimeseriesSchema implements Comparable<TimeseriesSchema>, Serializa
   public static TimeseriesSchema deserializeFrom(ByteBuffer buffer) {
     TimeseriesSchema measurementSchema = new TimeseriesSchema();
 
-    measurementSchema.measurementId = ReadWriteIOUtils.readString(buffer);
-
     measurementSchema.type = ReadWriteIOUtils.readDataType(buffer);
 
     measurementSchema.encoding = ReadWriteIOUtils.readEncoding(buffer);
@@ -98,22 +98,6 @@ public class TimeseriesSchema implements Comparable<TimeseriesSchema>, Serializa
     }
 
     return measurementSchema;
-  }
-
-  public String getDeviceId() {
-    return deviceId;
-  }
-
-  public void setDeviceId(String deviceId) {
-    this.deviceId = deviceId;
-  }
-
-  public String getMeasurementId() {
-    return measurementId;
-  }
-
-  public void setMeasurementId(String measurementId) {
-    this.measurementId = measurementId;
   }
 
   public Map<String, String> getProps() {
@@ -161,6 +145,16 @@ public class TimeseriesSchema implements Comparable<TimeseriesSchema>, Serializa
 
   public CompressionType getCompressionType() {
     return compressionType;
+  }
+
+  @Override
+  public int compareTo(TimeseriesSchema o) {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  public String getMeasurementId() {
+    return measurementId;
   }
 
 }
