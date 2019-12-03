@@ -16,26 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.iotdb.tsfile.common.constant;
 
-public class StatisticConstant {
+package org.apache.iotdb.tsfile.constant;
 
-  // names of statistics (aggregations), shared with IoTDB
-  public static final String MIN_TIME = "min_time";
-  public static final String MAX_TIME = "max_time";
+import java.io.File;
+import java.util.Random;
 
-  public static final String MAX_VALUE = "max_value";
-  public static final String MIN_VALUE = "min_value";
+public class TestConstant {
+    public static final String BASE_OUTPUT_PATH = "target".concat(File.separator);
+    public static final float float_min_delta = 0.00001f;
+    public static final double double_min_delta = 0.00001d;
+    public static final Random random = new Random(System.currentTimeMillis());
 
-  public static final String COUNT = "count";
-
-  public static final String FIRST = "first";
-
-  public static final String AVG = "avg";
-
-  public static final String SUM = "sum";
-
-  public static final String LAST = "last";
-
-  private StatisticConstant(){}
 }

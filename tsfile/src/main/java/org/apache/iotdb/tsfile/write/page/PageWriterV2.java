@@ -327,8 +327,7 @@ public class PageWriterV2 {
     }
 
     // write the page header to IOWriter
-    PageHeader header = new PageHeader(uncompressedSize, compressedSize, pointNumber, statistics,
-        pageMaxTime, pageMinTime);
+    PageHeader header = new PageHeader(uncompressedSize, compressedSize, statistics);
     header.serializeTo(pageBuffer);
 
     // write page content to temp PBAOS

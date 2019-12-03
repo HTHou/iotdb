@@ -16,20 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.iotdb.tsfile.file.metadata.statistics;
 
-import org.apache.iotdb.tsfile.exception.TsFileRuntimeException;
+package org.apache.iotdb.db.constant;
 
-public class StatisticsClassException extends TsFileRuntimeException {
+import java.io.File;
+import java.util.Random;
 
-  private static final long serialVersionUID = -5445795844780183770L;
-
-  public StatisticsClassException(Class<?> className1, Class<?> className2) {
-    super("tsfile-file Statistics classes mismatched: " + className1 + " vs. " + className2);
-  }
-
-  public StatisticsClassException(String message) {
-    super(message);
-  }
-
+public class TestConstant {
+    public static final String BASE_OUTPUT_PATH = "target".concat(File.separator);
+    public static final String OUTPUT_DATA_DIR = BASE_OUTPUT_PATH.concat("data").concat(File.separator);
 }

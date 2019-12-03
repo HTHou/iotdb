@@ -43,6 +43,7 @@ import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSEncoding;
 import org.apache.iotdb.tsfile.file.metadata.statistics.Statistics;
 import org.apache.iotdb.tsfile.file.metadataV2.ChunkMetaDataV2;
+import org.apache.iotdb.tsfile.file.metadataV2.TimeseriesMetaData;
 import org.apache.iotdb.tsfile.file.metadataV2.TsFileMetadataV2;
 import org.apache.iotdb.tsfile.read.common.Chunk;
 import org.apache.iotdb.tsfile.read.common.Path;
@@ -274,7 +275,7 @@ public class TsFileIOWriterV2 {
     int i = 0;
     for (Map.Entry<Path, List<ChunkMetaDataV2>> entry : timeseriesMetadataMap.entrySet()) {
       tsOffsets[i] = out.getPosition();
-      int size = serializeTo(out.wrapAsStream());
+      int size = TimeseriesMetaData.serializeTo(out.wrapAsStream());
       i++;
     }
 

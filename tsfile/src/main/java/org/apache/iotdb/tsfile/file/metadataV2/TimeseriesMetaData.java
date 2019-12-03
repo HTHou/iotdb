@@ -23,7 +23,6 @@ public class TimeseriesMetaData {
    */
   public int serializeTo(OutputStream outputStream) throws IOException {
     int byteLen = 0;
-    byteLen += ReadWriteIOUtils.write(deviceID, outputStream);
     byteLen += ReadWriteIOUtils.write(startOffsetOfTimeseries, outputStream);
     byteLen += ReadWriteIOUtils.write(endOffsetOfTimeseries, outputStream);
     byteLen += ReadWriteIOUtils.write(version, outputStream);

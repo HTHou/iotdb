@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import org.apache.iotdb.tsfile.exception.filter.StatisticsClassException;
 import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;
 import org.apache.iotdb.tsfile.utils.Binary;
 import org.apache.iotdb.tsfile.utils.ReadWriteIOUtils;
@@ -177,16 +178,14 @@ public class BinaryStatistics extends Statistics<Binary> {
 
   @Override
   void deserialize(InputStream inputStream) throws IOException {
-    this.firstValue = new Binary(ReadWriteIOUtils.readBytesWithSelfDescriptionLength(inputStream));
-    this.lastValue = new Binary(ReadWriteIOUtils.readBytesWithSelfDescriptionLength(inputStream));
+    this.firstValue = ReadWriteIOUtils.readBinary(inputStream);
+    this.lastValue = ReadWriteIOUtils.readBinary(inputStream);
   }
 
   @Override
   void deserialize(ByteBuffer byteBuffer) {
-    this.firstValue = new Binary(
-        ReadWriteIOUtils.readByteBufferWithSelfDescriptionLength(byteBuffer).array());
-    this.lastValue = new Binary(
-        ReadWriteIOUtils.readByteBufferWithSelfDescriptionLength(byteBuffer).array());
+    this.firstValue = ReadWriteIOUtils.readBinary(byteBuffer);
+    this.lastValue = ReadWriteIOUtils.readBinary(byteBuffer);
   }
 
   @Override

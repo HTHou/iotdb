@@ -16,16 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.iotdb.tsfile.utils;
+package org.apache.iotdb.tsfile.exception.filter;
 
-import java.util.Random;
+import org.apache.iotdb.tsfile.exception.TsFileRuntimeException;
 
-/**
- * This class is used for Junit test to get some unified constant.
- */
-public class CommonTestConstant {
+public class StatisticsClassException extends TsFileRuntimeException {
 
-  public static final float float_min_delta = 0.00001f;
-  public static final double double_min_delta = 0.00001d;
-  public static final Random random = new Random(System.currentTimeMillis());
+  private static final long serialVersionUID = -5445795844780183770L;
+
+  public StatisticsClassException(Class<?> className1, Class<?> className2) {
+    super("Statistics classes mismatched: " + className1 + " vs. " + className2);
+  }
+
+  public StatisticsClassException(String message) {
+    super(message);
+  }
+
 }
