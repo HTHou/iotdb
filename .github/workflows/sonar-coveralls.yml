@@ -13,7 +13,6 @@ on:
     branches:
       - master
       - "rel/*"
-      - cluster_new
     paths-ignore:
       - "docs/**"
   # allow manually run the action:
@@ -41,16 +40,6 @@ jobs:
       - name: IT/UT Test
         # we do not compile client-cpp for saving time, it is tested in client.yml
         run: mvn -B clean post-integration-test -Dtest.port.closed=true -Pcode-coverage
-      - name: Code Coverage (Coveralls)
-        if: ${{ success() }}
-        run: |
-          mvn -B post-integration-test -Pcode-coverage -pl code-coverage
-          mvn -B coveralls:report \
-          -DserviceName=travis_ci \
-          -Dbranch=$BRANCH_NAME \
-          -DpullRequest=$PR_NUMBER \
-          -DrepoToken=${{ secrets.COVERALL_TOKEN }} \
-          -Pcode-coverage
       - name: SonarCloud Report
         if: ${{ success() }}
         env:
@@ -62,6 +51,6 @@ jobs:
           -Dsonar.projectKey=apache_incubator-iotdb \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.login=${{ secrets.SONARCLOUD_TOKEN }} \
-          -Dbranch=$BRANCH_NAME \
-          -DpullRequest=$PR_NUMBER \
+          -Dsonar.pullrequest.branch=$BRANCH_NAME \
+          -Dsonar.pullrequest.key=$PR_NUMBER \
           -DskipTests -pl '!distribution' -am
