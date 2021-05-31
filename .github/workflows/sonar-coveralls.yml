@@ -42,8 +42,8 @@ jobs:
       - name: echo Test
         # we do not compile client-cpp for saving time, it is tested in client.yml
         run: |
-          echo $BRANCH_NAME
-          echo $PR_NUMBER
+          echo ${GITHUB_REF##*/}
+          echo ${{ github.event.number }}
       - name: IT/UT Test
         # we do not compile client-cpp for saving time, it is tested in client.yml
         run: mvn -B clean post-integration-test -Dtest.port.closed=true -Pcode-coverage
